@@ -1,6 +1,7 @@
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
 
 
-def home(_request: HttpRequest) -> HttpResponse:
-    return HttpResponse("Arithmetic trainer (WIP)")
+def home(request: HttpRequest) -> HttpResponse:
+    return render(request, "trainer/home.html")
 
