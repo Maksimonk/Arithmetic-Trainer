@@ -4,7 +4,28 @@
 
 {% block content %}
   <section class="card">
-    <h1 class="h1">Арифметический тренажёр</h1>
-    <p class="muted">Здесь будет тренировка: сложение, вычитание и умножение.</p>
+    <h1 class="h1">Привет, {{ nickname }}!</h1>
+    <p class="muted">
+      Тренажёр по сложению, вычитанию и умножению с постепенным повышением сложности.
+    </p>
+
+    <div class="grid">
+      <div class="stat">
+        <div class="stat__label">Уровень</div>
+        <div class="stat__value">{{ level }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Попыток</div>
+        <div class="stat__value">{{ total_attempts }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Правильных</div>
+        <div class="stat__value">{{ total_correct }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Серия</div>
+        <div class="stat__value">{{ correct_streak }}</div>
+      </div>
+    </div>
   </section>
 {% endblock %}

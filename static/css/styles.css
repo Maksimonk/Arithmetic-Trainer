@@ -50,6 +50,37 @@ body {
   color: var(--muted);
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.stat {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stat__label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat__value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
 .footer {
   margin-top: 30px;
   border-top: 1px solid var(--border);
