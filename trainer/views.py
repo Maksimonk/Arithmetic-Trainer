@@ -1,15 +1,26 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
+from .storage import COOKIE_NAME, get_or_create_user_id, load_profile
+
+
+def _with_uid_cookie(response: HttpResponse, user_id: str) -> HttpResponse:
+    response.set_cookie(COOKIE_NAME, user_id, max_age=60 * 60 * 24 * 365, samesite="Lax")
+    return response
+
 
 def home(request: HttpRequest) -> HttpResponse:
-    # Позже значения будут подставляться из сохранённого прогресса.
+    user_id = get_or_create_user_id(request.COOKIES.get(COOKIE_NAME))
+    profile = load_profile(user_id)
+    stats = profile.get("stats", {})
+    nickname = (profile.get("nickname") or "").strip() or "Гость"
     context = {
-        "nickname": "Гость",
-        "level": 1,
-        "total_attempts": 0,
-        "total_correct": 0,
-        "correct_streak": 0,
+        "nickname": nickname,
+        "level": stats.get("level", 1),
+        "total_attempts": stats.get("total_attempts", 0),
+        "total_correct": stats.get("total_correct", 0),
+        "correct_streak": stats.get("correct_streak", 0),
     }
-    return render(request, "trainer/home.html", context)
+    response = render(request, "trainer/home.html", context)
+    return _with_uid_cookie(response, user_id)
 

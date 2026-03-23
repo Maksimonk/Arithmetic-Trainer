@@ -4,3 +4,7 @@ __pycache__/
 .venv/
 venv/
 
+# Локальные данные пользователей (JSON)
+data/users/*.json
+db.sqlite3
+
