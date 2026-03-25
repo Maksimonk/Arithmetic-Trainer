@@ -75,3 +75,13 @@ def save_profile(user_id: str, profile: dict[str, Any]) -> None:
     payload = json.dumps(profile, ensure_ascii=False, indent=2)
     tmp.write_text(payload, encoding="utf-8")
     tmp.replace(path)
+
+
+def update_profile(
+    user_id: str, *, nickname: str, settings_dict: dict[str, Any]
+) -> dict[str, Any]:
+    profile = load_profile(user_id)
+    profile["nickname"] = nickname.strip()
+    profile["settings"].update(settings_dict)
+    save_profile(user_id, profile)
+    return profile

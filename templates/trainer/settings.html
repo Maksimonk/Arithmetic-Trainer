@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки — Арифметический тренажёр{% endblock %}
+
+{% block content %}
+  <section class="card">
+    <h1 class="h1">Настройки</h1>
+    <p class="muted">Выберите операции и (по желанию) укажите никнейм.</p>
+
+    <form method="post" class="form">
+      {% csrf_token %}
+
+      <div class="form__row">
+        <label class="label" for="{{ form.nickname.id_for_label }}">{{ form.nickname.label }}</label>
+        {{ form.nickname }}
+        {% if form.nickname.errors %}
+          <div class="field-error">{{ form.nickname.errors|striptags }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form__row">
+        <div class="label">Операции</div>
+        <label class="checkbox">{{ form.allow_addition }} Сложение</label>
+        <label class="checkbox">{{ form.allow_subtraction }} Вычитание</label>
+        <label class="checkbox">{{ form.allow_multiplication }} Умножение</label>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="field-error">{{ form.non_field_errors|striptags }}</div>
+      {% endif %}
+
+      <div class="actions">
+        <button class="btn" type="submit">Сохранить</button>
+        <a class="btn btn--secondary" href="{% url 'home' %}">На главную</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}
