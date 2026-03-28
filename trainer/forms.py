@@ -21,3 +21,21 @@ class SettingsForm(forms.Form):
         ):
             raise forms.ValidationError("Выберите хотя бы один тип примеров.")
         return cleaned
+
+
+class AnswerForm(forms.Form):
+    left = forms.IntegerField(widget=forms.HiddenInput())
+    right = forms.IntegerField(widget=forms.HiddenInput())
+    operation = forms.CharField(widget=forms.HiddenInput())
+
+    answer = forms.IntegerField(
+        label="Ваш ответ",
+        widget=forms.NumberInput(attrs={"class": "form-control", "autofocus": "autofocus"}),
+        error_messages={"required": "Введите число."},
+    )
+
+    def clean_operation(self) -> str:
+        op = (self.cleaned_data.get("operation") or "").strip()
+        if op not in {"+", "-", "×"}:
+            raise forms.ValidationError("Неизвестная операция.")
+        return op

@@ -1,9 +1,12 @@
+from typing import Any, Optional
+
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .forms import SettingsForm
-from .storage import COOKIE_NAME, get_or_create_user_id, load_profile, update_profile
+from .forms import AnswerForm, SettingsForm
+from .problem import correct_answer, generate_problem
+from .storage import COOKIE_NAME, get_or_create_user_id, load_profile, save_profile, update_profile, utc_now_iso
 
 
 def _with_uid_cookie(response: HttpResponse, user_id: str) -> HttpResponse:
@@ -52,5 +55,77 @@ def settings_view(request: HttpRequest) -> HttpResponse:
         form = SettingsForm(initial=initial)
 
     response = render(request, "trainer/settings.html", {"form": form})
+    return _with_uid_cookie(response, user_id)
+
+
+def train(request: HttpRequest) -> HttpResponse:
+    user_id = get_or_create_user_id(request.COOKIES.get(COOKIE_NAME))
+    profile = load_profile(user_id)
+    feedback: Optional[dict[str, Any]] = None
+
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            left = form.cleaned_data["left"]
+            right = form.cleaned_data["right"]
+            operation = form.cleaned_data["operation"]
+            user_answer = form.cleaned_data["answer"]
+            corr = correct_answer(left, right, operation)
+            is_correct = user_answer == corr
+
+            stats_dict = profile.setdefault("stats", {})
+            stats_dict["total_attempts"] = int(stats_dict.get("total_attempts", 0)) + 1
+            if is_correct:
+                stats_dict["total_correct"] = int(stats_dict.get("total_correct", 0)) + 1
+                stats_dict["correct_streak"] = int(stats_dict.get("correct_streak", 0)) + 1
+            else:
+                stats_dict["correct_streak"] = 0
+
+            streak = int(stats_dict.get("correct_streak", 0))
+            if streak and streak % 5 == 0:
+                stats_dict["level"] = int(stats_dict.get("level", 1)) + 1
+
+            attempt = {
+                "ts": utc_now_iso(),
+                "level": int(stats_dict.get("level", 1)),
+                "left": left,
+                "right": right,
+                "operation": operation,
+                "user_answer": user_answer,
+                "correct_answer": corr,
+                "is_correct": is_correct,
+            }
+            profile.setdefault("attempts", []).insert(0, attempt)
+            profile["attempts"] = profile["attempts"][:200]
+            save_profile(user_id, profile)
+
+            feedback = {
+                "is_correct": is_correct,
+                "correct_answer": corr,
+                "expression": f"{left} {operation} {right}",
+            }
+            profile = load_profile(user_id)
+
+    problem = generate_problem(profile)
+    form = AnswerForm(
+        initial={
+            "left": problem["left"],
+            "right": problem["right"],
+            "operation": problem["operation"],
+        }
+    )
+    nickname = (profile.get("nickname") or "").strip() or "Гость"
+    stats = profile.get("stats", {})
+    response = render(
+        request,
+        "trainer/train.html",
+        {
+            "form": form,
+            "problem": problem,
+            "feedback": feedback,
+            "nickname": nickname,
+            "stats": stats,
+        },
+    )
     return _with_uid_cookie(response, user_id)
 

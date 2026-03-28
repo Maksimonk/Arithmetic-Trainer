@@ -89,7 +89,8 @@ body {
   color: var(--muted);
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
   width: min(420px, 100%);
   padding: 10px 12px;
   border-radius: 12px;
@@ -99,7 +100,8 @@ input[type="text"] {
   outline: none;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="number"]:focus {
   border-color: rgba(79, 140, 255, 0.7);
   box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.15);
 }
@@ -147,6 +149,12 @@ input[type="text"]:focus {
 .field-error {
   color: #ff5c7a;
   margin-top: 6px;
+}
+
+.problem-expr {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 12px 0;
 }
 
 .grid {

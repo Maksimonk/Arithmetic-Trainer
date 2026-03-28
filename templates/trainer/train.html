@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Тренировка — Арифметический тренажёр{% endblock %}
+
+{% block content %}
+  <section class="card">
+    <h1 class="h1">Тренировка</h1>
+    <p class="muted">Игрок: {{ nickname }} · Уровень: {{ stats.level|default:1 }} · Серия: {{ stats.correct_streak|default:0 }}</p>
+
+    {% if feedback %}
+      {% if feedback.is_correct %}
+        <p class="field-error" style="color: #29cc7a">Верно: {{ feedback.expression }} = {{ feedback.correct_answer }}</p>
+      {% else %}
+        <p class="field-error">Неверно. {{ feedback.expression }} = {{ feedback.correct_answer }}</p>
+      {% endif %}
+    {% endif %}
+
+    <p class="problem-expr">{{ problem.left }} {{ problem.operation }} {{ problem.right }} = ?</p>
+
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.left }}
+      {{ form.right }}
+      {{ form.operation }}
+
+      <div class="form__row">
+        <label class="label" for="{{ form.answer.id_for_label }}">{{ form.answer.label }}</label>
+        {{ form.answer }}
+        {% if form.answer.errors %}
+          <div class="field-error">{{ form.answer.errors|striptags }}</div>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="field-error">{{ form.non_field_errors|striptags }}</div>
+      {% endif %}
+
+      <div class="actions">
+        <button class="btn" type="submit">Проверить</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
