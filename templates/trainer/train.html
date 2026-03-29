@@ -9,13 +9,16 @@
 
     {% if feedback %}
       {% if feedback.is_correct %}
-        <p class="field-error" style="color: #29cc7a">Верно: {{ feedback.expression }} = {{ feedback.correct_answer }}</p>
+        <div class="alert alert--success">Верно! {{ feedback.expression }} = {{ feedback.correct_answer }}</div>
       {% else %}
-        <p class="field-error">Неверно. {{ feedback.expression }} = {{ feedback.correct_answer }}</p>
+        <div class="alert alert--danger">Неверно. {{ feedback.expression }} = {{ feedback.correct_answer }}</div>
       {% endif %}
     {% endif %}
 
-    <p class="problem-expr">{{ problem.left }} {{ problem.operation }} {{ problem.right }} = ?</p>
+    <div class="problem">
+      <div class="problem__level">Уровень {{ problem.level }}</div>
+      <div class="problem__expr">{{ problem.left }} {{ problem.operation }} {{ problem.right }} = ?</div>
+    </div>
 
     <form method="post" class="form">
       {% csrf_token %}
@@ -37,6 +40,7 @@
 
       <div class="actions">
         <button class="btn" type="submit">Проверить</button>
+        <a class="btn btn--secondary" href="{% url 'settings' %}">Настройки</a>
       </div>
     </form>
   </section>

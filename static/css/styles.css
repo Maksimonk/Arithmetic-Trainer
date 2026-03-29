@@ -4,6 +4,8 @@
   --text: #e7eefc;
   --muted: #a6b3cc;
   --border: rgba(255, 255, 255, 0.08);
+  --success: #29cc7a;
+  --danger: #ff5c7a;
 }
 
 * {
@@ -13,7 +15,8 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  background: var(--bg);
+  background: radial-gradient(1200px 800px at 15% 10%, rgba(79, 140, 255, 0.25), transparent 60%),
+    radial-gradient(1000px 700px at 85% 20%, rgba(41, 204, 122, 0.18), transparent 55%), var(--bg);
   color: var(--text);
 }
 
@@ -25,6 +28,11 @@ body {
 .header {
   border-bottom: 1px solid var(--border);
   padding: 14px 0;
+  background: rgba(10, 18, 32, 0.7);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .header__inner {
@@ -62,7 +70,7 @@ body {
   margin: 18px 0;
   padding: 18px;
   border: 1px solid var(--border);
-  background: var(--card);
+  background: rgba(17, 27, 46, 0.85);
   border-radius: 14px;
 }
 
@@ -147,14 +155,45 @@ input[type="number"]:focus {
 }
 
 .field-error {
-  color: #ff5c7a;
+  color: var(--danger);
   margin-top: 6px;
 }
 
-.problem-expr {
-  font-size: 24px;
-  font-weight: 700;
+.alert {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  margin: 10px 0;
+}
+
+.alert--success {
+  border-color: rgba(41, 204, 122, 0.45);
+  background: rgba(41, 204, 122, 0.12);
+}
+
+.alert--danger {
+  border-color: rgba(255, 92, 122, 0.45);
+  background: rgba(255, 92, 122, 0.12);
+}
+
+.problem {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
   margin: 12px 0;
+}
+
+.problem__level {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.problem__expr {
+  font-size: 30px;
+  font-weight: 800;
 }
 
 .grid {
