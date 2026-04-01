@@ -129,3 +129,16 @@ def train(request: HttpRequest) -> HttpResponse:
     )
     return _with_uid_cookie(response, user_id)
 
+
+def history(request: HttpRequest) -> HttpResponse:
+    user_id = get_or_create_user_id(request.COOKIES.get(COOKIE_NAME))
+    profile = load_profile(user_id)
+    attempts = profile.get("attempts", [])[:50]
+    nickname = (profile.get("nickname") or "").strip() or "Гость"
+    response = render(
+        request,
+        "trainer/history.html",
+        {"attempts": attempts, "nickname": nickname},
+    )
+    return _with_uid_cookie(response, user_id)
+

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}История — Арифметический тренажёр{% endblock %}
+
+{% block content %}
+  <section class="card">
+    <h1 class="h1">История попыток</h1>
+    <p class="muted">Игрок: {{ nickname }} · Показаны последние 50 примеров.</p>
+
+    {% if attempts %}
+      <div class="table">
+        <div class="table__row table__row--head">
+          <div>Когда (UTC)</div>
+          <div>Пример</div>
+          <div>Ответ</div>
+          <div>Результат</div>
+        </div>
+        {% for a in attempts %}
+          <div class="table__row">
+            <div class="mono">{{ a.ts|default:"—" }}</div>
+            <div class="mono">{{ a.left }} {{ a.operation }} {{ a.right }}</div>
+            <div class="mono">{{ a.user_answer }}</div>
+            {% if a.is_correct %}
+              <div class="ok">верно</div>
+            {% else %}
+              <div class="bad">неверно (правильно: {{ a.correct_answer }})</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">Пока нет попыток. Перейдите в тренировку.</p>
+      <div class="actions">
+        <a class="btn" href="{% url 'train' %}">Тренировка</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
