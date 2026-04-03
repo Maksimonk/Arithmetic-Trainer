@@ -79,6 +79,11 @@ body {
   font-size: 28px;
 }
 
+.h2 {
+  margin: 18px 0 10px;
+  font-size: 18px;
+}
+
 .muted {
   color: var(--muted);
 }
@@ -229,6 +234,10 @@ input[type="number"]:focus {
   background: rgba(255, 255, 255, 0.05);
   color: var(--muted);
   font-size: 12px;
+}
+
+.table--stats .table__row {
+  grid-template-columns: 2fr 1fr 1fr;
 }
 
 .grid {

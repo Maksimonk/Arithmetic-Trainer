@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика — Арифметический тренажёр{% endblock %}
+
+{% block content %}
+  <section class="card">
+    <h1 class="h1">Статистика</h1>
+    <p class="muted">Игрок: {{ nickname }}</p>
+
+    <div class="grid">
+      <div class="stat">
+        <div class="stat__label">Уровень</div>
+        <div class="stat__value">{{ level }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Попыток</div>
+        <div class="stat__value">{{ total_attempts }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Правильных</div>
+        <div class="stat__value">{{ total_correct }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat__label">Точность</div>
+        <div class="stat__value">{{ accuracy }}%</div>
+      </div>
+    </div>
+
+    <h2 class="h2">По операциям</h2>
+    <div class="table table--stats">
+      <div class="table__row table__row--head">
+        <div>Операция</div>
+        <div>Попыток</div>
+        <div>Правильных</div>
+      </div>
+      {% for row in per_op_rows %}
+        <div class="table__row">
+          <div class="mono">{{ row.symbol }} <span class="muted">({{ row.name }})</span></div>
+          <div class="mono">{{ row.total }}</div>
+          <div class="mono">{{ row.correct }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

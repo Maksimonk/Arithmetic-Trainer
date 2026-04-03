@@ -142,3 +142,44 @@ def history(request: HttpRequest) -> HttpResponse:
     )
     return _with_uid_cookie(response, user_id)
 
+
+def stats(request: HttpRequest) -> HttpResponse:
+    user_id = get_or_create_user_id(request.COOKIES.get(COOKIE_NAME))
+    profile = load_profile(user_id)
+    attempts = profile.get("attempts", [])
+
+    per_op_map = {
+        "+": {"total": 0, "correct": 0},
+        "-": {"total": 0, "correct": 0},
+        "×": {"total": 0, "correct": 0},
+    }
+    for attempt in attempts:
+        op = attempt.get("operation")
+        if op in per_op_map:
+            per_op_map[op]["total"] += 1
+            if attempt.get("is_correct"):
+                per_op_map[op]["correct"] += 1
+
+    stats_dict = profile.get("stats", {})
+    total = int(stats_dict.get("total_attempts", 0))
+    correct = int(stats_dict.get("total_correct", 0))
+    accuracy = round((correct / total) * 100, 1) if total else 0.0
+
+    response = render(
+        request,
+        "trainer/stats.html",
+        {
+            "nickname": (profile.get("nickname") or "").strip() or "Гость",
+            "level": stats_dict.get("level", 1),
+            "total_attempts": total,
+            "total_correct": correct,
+            "accuracy": accuracy,
+            "per_op_rows": [
+                {"symbol": "+", "name": "Сложение", **per_op_map["+"]},
+                {"symbol": "-", "name": "Вычитание", **per_op_map["-"]},
+                {"symbol": "×", "name": "Умножение", **per_op_map["×"]},
+            ],
+        },
+    )
+    return _with_uid_cookie(response, user_id)
+
