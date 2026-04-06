@@ -88,6 +88,11 @@ body {
   color: var(--muted);
 }
 
+.intro {
+  max-width: 62ch;
+  line-height: 1.5;
+}
+
 .form {
   margin-top: 10px;
 }
