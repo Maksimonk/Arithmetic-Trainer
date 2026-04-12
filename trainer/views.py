@@ -6,7 +6,14 @@ from django.urls import reverse
 
 from .forms import AnswerForm, SettingsForm
 from .problem import correct_answer, generate_problem
-from .storage import COOKIE_NAME, get_or_create_user_id, load_profile, save_profile, update_profile, utc_now_iso
+from .storage import (
+    COOKIE_NAME,
+    get_or_create_user_id,
+    load_profile,
+    save_profile,
+    update_profile,
+    utc_now_iso,
+)
 
 
 def _with_uid_cookie(response: HttpResponse, user_id: str) -> HttpResponse:
@@ -17,14 +24,14 @@ def _with_uid_cookie(response: HttpResponse, user_id: str) -> HttpResponse:
 def home(request: HttpRequest) -> HttpResponse:
     user_id = get_or_create_user_id(request.COOKIES.get(COOKIE_NAME))
     profile = load_profile(user_id)
-    stats = profile.get("stats", {})
+    stats_data = profile.get("stats", {})
     nickname = (profile.get("nickname") or "").strip() or "Гость"
     context = {
         "nickname": nickname,
-        "level": stats.get("level", 1),
-        "total_attempts": stats.get("total_attempts", 0),
-        "total_correct": stats.get("total_correct", 0),
-        "correct_streak": stats.get("correct_streak", 0),
+        "level": stats_data.get("level", 1),
+        "total_attempts": stats_data.get("total_attempts", 0),
+        "total_correct": stats_data.get("total_correct", 0),
+        "correct_streak": stats_data.get("correct_streak", 0),
     }
     response = render(request, "trainer/home.html", context)
     return _with_uid_cookie(response, user_id)
@@ -115,7 +122,7 @@ def train(request: HttpRequest) -> HttpResponse:
         }
     )
     nickname = (profile.get("nickname") or "").strip() or "Гость"
-    stats = profile.get("stats", {})
+    stats_data = profile.get("stats", {})
     response = render(
         request,
         "trainer/train.html",
@@ -124,7 +131,7 @@ def train(request: HttpRequest) -> HttpResponse:
             "problem": problem,
             "feedback": feedback,
             "nickname": nickname,
-            "stats": stats,
+            "stats": stats_data,
         },
     )
     return _with_uid_cookie(response, user_id)

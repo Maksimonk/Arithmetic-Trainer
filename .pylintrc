@@ -1,0 +1,21 @@
+[MASTER]
+ignore=migrations
+
+[BASIC]
+good-names=i,j,k,op,lo,hi,a,app_name
+
+[MESSAGES CONTROL]
+disable=
+    missing-module-docstring,
+    missing-function-docstring,
+    missing-class-docstring,
+    too-few-public-methods,
+    too-many-branches,
+    too-many-locals,
+    too-many-statements,
+    too-many-return-statements,
+    too-many-arguments,
+    trailing-newlines
+
+[FORMAT]
+max-line-length=110
